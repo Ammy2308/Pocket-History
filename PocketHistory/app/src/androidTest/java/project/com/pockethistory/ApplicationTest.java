@@ -1,4 +1,4 @@
-package project.com.pockethistory;
+package todevs.com.pockethistory;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
