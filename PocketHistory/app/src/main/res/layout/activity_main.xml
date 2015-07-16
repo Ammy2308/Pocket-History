@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="todevs.com.pockethistory.meme.navigation.dummy">
+    tools:context="todevs.com.pockethistory.meme.navigation.dummy"
+    android:id="@+id/">
 
     <include layout="@layout/app_bar"
         android:id="@+id/app_bar"/>
@@ -12,6 +13,8 @@
         android:layout_below="@id/app_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text=""
+        android:id="@+id/textView" />
 
 </RelativeLayout>
+
