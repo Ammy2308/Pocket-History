@@ -2,19 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
     android:background="@color/white"
     tools:context="todevs.com.pockethistory.meme.navigation.dummy">
-=======
-    tools:context="todevs.com.pockethistory.meme.navigation.dummy"
-    android:id="@+id/">
->>>>>>> b13f570e8112bb415a09818251a9ab97df1af6a0
 
     <include layout="@layout/app_bar"
         android:id="@+id/app_bar"/>
 
-<<<<<<< HEAD
-=======
     <TextView
         android:padding="8dp"
         android:layout_below="@id/app_bar"
@@ -23,6 +16,5 @@
         android:text=""
         android:id="@+id/textView" />
 
->>>>>>> b13f570e8112bb415a09818251a9ab97df1af6a0
 </RelativeLayout>
 
