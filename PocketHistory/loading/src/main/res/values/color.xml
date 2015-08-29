@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="book_loading_background">#00ffffff</color>
+    <color name="book_loading_book">#644322</color>
+    <color name="book_loading_page">#00ffffff</color>
+
+</resources>
