@@ -2,6 +2,7 @@ package project.com.pockethistory;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     // Need this to link with the Snackbar
     private CoordinatorLayout mCoordinator;
     //Need this to set the title of the app bar
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private FloatingActionButton mFab;
     private Toolbar mToolbar;
     private ViewPager mPager;
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_coor);
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.root_coordinator);
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(mToolbar);
@@ -64,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mPager);
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
-
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,11 +71,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Notice how the title is set on the Collapsing Toolbar Layout instead of the Toolbar
-//        mCollapsingToolbarLayout.setTitle(getResources().getString(R.string.title_activity_fourth));
-
         TextView text = new TextView(this);
-        text.setText(getResources().getString(R.string.title_activity_fourth));
+        text.setText(getResources().getString(R.string.title_string));
         text.setTextAppearance(this, android.R.style.TextAppearance_Material_Widget_ActionBar_Title_Inverse);
         mToolbar.addView(text);
 

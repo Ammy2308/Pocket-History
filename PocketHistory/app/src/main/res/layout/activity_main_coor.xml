@@ -22,7 +22,6 @@
                 android:id="@+id/app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:title="@string/title_activity_fourth"
                 app:layout_collapseMode="pin"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
@@ -33,13 +32,13 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="center"
             android:background="@color/colorAccent"
             app:layout_collapseMode="pin"
             app:tabIndicatorColor="@color/colorPrimary"
             app:tabMode="scrollable"
             app:tabSelectedTextColor="@android:color/white"
-            app:tabTextColor="@color/button_material_light" />
+            app:tabTextColor="#EEE" />
 
     </android.support.design.widget.AppBarLayout>
 
