@@ -1,7 +1,8 @@
 package project.com.pockethistory.interfaces;
 
-/**
- * Created by KH2021 on 9/5/2015.
- */
+import java.util.List;
+import project.com.pockethistory.RecyclerContent;
+
 public interface DataAnalyzer {
+    List<RecyclerContent> dataParserAndOrganizer(String jsonString);
 }
