@@ -2,17 +2,12 @@ package project.com.pockethistory;
 
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
 
 import com.victor.loading.book.BookLoading;
-import com.victor.loading.newton.NewtonCradleLoading;
-import com.victor.loading.rotate.RotateLoading;
 
-public class SplashActivity extends ActionBarActivity {
+public class SplashActivity extends AppCompatActivity {
     private BookLoading bookLoading;
 
     @Override
@@ -22,13 +17,14 @@ public class SplashActivity extends ActionBarActivity {
         bookLoading = (BookLoading) findViewById(R.id.bookloading);
 
         bookLoading.start();
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
-//                Intent main_activity_intent = new Intent(SplashActivity.this, MainActivity.class);
-//                SplashActivity.this.startActivity(main_activity_intent);
-//                SplashActivity.this.finish();
-//            }
-//        }, 1000);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                bookLoading.stop();
+                Intent main_activity_intent = new Intent(SplashActivity.this, MainActivity.class);
+                SplashActivity.this.startActivity(main_activity_intent);
+                SplashActivity.this.finish();
+            }
+        }, 5000);
     }
 }
