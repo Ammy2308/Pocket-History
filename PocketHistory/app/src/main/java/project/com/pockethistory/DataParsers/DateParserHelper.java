@@ -1,5 +1,9 @@
 package project.com.pockethistory.DataParsers;
 
+import android.util.Log;
+
+import org.json.JSONException;
+
 import java.util.List;
 
 import project.com.pockethistory.DateParse;
@@ -10,7 +14,7 @@ public class DateParserHelper implements DataAnalyzer {
     private DateParse dateParse = new DateParse();
 
     @Override
-    public List<RecyclerContent> dataParserAndOrganizer(String jsonString) {
+    public List<RecyclerContent> dataParserAndOrganizer(String jsonString) throws JSONException {
         return dateParse.dateParseImplementation(jsonString);
     }
 }

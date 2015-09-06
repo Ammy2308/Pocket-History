@@ -29,7 +29,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+
+import project.com.pockethistory.DataParsers.DateParserHelper;
+import project.com.pockethistory.DataParsers.YearParserHelper;
+import project.com.pockethistory.interfaces.DataAnalyzer;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -48,8 +55,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_coor);
 
         Intent intent = getIntent();
-        String currentDateData = intent.getStringExtra("currentDateData");
-        Log.e("YOO", currentDateData);
+        String currentDateDataJSON = intent.getStringExtra("currentDateData");
+        DataAnalyzer dataAnalyzer = new DateParserHelper();
+        try {
+            dataAnalyzer.dataParserAndOrganizer(currentDateDataJSON);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.root_coordinator);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
@@ -136,7 +148,7 @@ class YourPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 7;
+        return 4;
     }
 
     @Override

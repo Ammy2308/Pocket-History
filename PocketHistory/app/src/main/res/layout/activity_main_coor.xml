@@ -36,7 +36,7 @@
             android:background="@color/colorAccent"
             app:layout_collapseMode="pin"
             app:tabIndicatorColor="@color/colorPrimary"
-            app:tabMode="scrollable"
+            app:tabMode="fixed"
             app:tabSelectedTextColor="@android:color/white"
             app:tabTextColor="#EEE" />
 
