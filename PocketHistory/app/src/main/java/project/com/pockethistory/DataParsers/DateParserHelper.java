@@ -14,7 +14,7 @@ public class DateParserHelper implements DataAnalyzer {
     private DateParse dateParse = new DateParse();
 
     @Override
-    public List<RecyclerContent> dataParserAndOrganizer(String jsonString) throws JSONException {
+    public List<Object> dataParserAndOrganizer(String jsonString) throws JSONException {
         return dateParse.dateParseImplementation(jsonString);
     }
 }

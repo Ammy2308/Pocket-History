@@ -6,5 +6,5 @@ import java.util.List;
 import project.com.pockethistory.RecyclerContent;
 
 public interface DataAnalyzer {
-    List<RecyclerContent> dataParserAndOrganizer(String jsonString) throws JSONException;
+    List<Object> dataParserAndOrganizer(String jsonString) throws JSONException;
 }

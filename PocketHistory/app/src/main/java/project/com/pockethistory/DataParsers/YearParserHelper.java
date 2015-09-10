@@ -10,7 +10,7 @@ public class YearParserHelper implements DataAnalyzer {
     private YearParse yearParse = new YearParse();
 
     @Override
-    public List<RecyclerContent> dataParserAndOrganizer(String jsonString) {
+    public List<Object> dataParserAndOrganizer(String jsonString) {
         return yearParse.yearParseImplementation(jsonString);
     }
 }

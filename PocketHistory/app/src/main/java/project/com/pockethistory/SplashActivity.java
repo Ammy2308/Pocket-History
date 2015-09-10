@@ -22,7 +22,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class SplashActivity extends AppCompatActivity {
     private BookLoading bookLoading;
@@ -45,9 +47,12 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String response = null;
-            DateFormat dateFormat = new SimpleDateFormat("MM/dd");
-            Date date = new Date();
-            String urlToHit = Utils.DATE_URL + dateFormat.format(date);
+            DateFormat dateFmt = new SimpleDateFormat("MM/dd");
+            dateFmt.setTimeZone(TimeZone.getDefault());
+//            dateFmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+            dateFmt.format(new Date());
+            String urlToHit = Utils.DATE_URL + dateFmt.format(new Date());
             DefaultHttpClient httpClient = new DefaultHttpClient();
 
             HttpGet httpGet = new HttpGet(urlToHit);
