@@ -3,6 +3,7 @@ package project.com.pockethistory.DataParsers;
 import android.util.Log;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class DateParserHelper implements DataAnalyzer {
     private DateParse dateParse = new DateParse();
 
     @Override
-    public List<Object> dataParserAndOrganizer(String jsonString) throws JSONException {
+    public JSONObject dataParserAndOrganizer(String jsonString) throws JSONException {
         return dateParse.dateParseImplementation(jsonString);
     }
 }

@@ -33,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import project.com.pockethistory.DataParsers.DateParserHelper;
 import project.com.pockethistory.DataParsers.YearParserHelper;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mPager;
     private YourPagerAdapter mAdapter;
     private TabLayout mTabLayout;
+    private JSONObject parsedData;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -58,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         String currentDateDataJSON = intent.getStringExtra("currentDateData");
         DataAnalyzer dataAnalyzer = new DateParserHelper();
         try {
-            dataAnalyzer.dataParserAndOrganizer(currentDateDataJSON);
+            parsedData =  dataAnalyzer.dataParserAndOrganizer(currentDateDataJSON);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
 
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        mAdapter = new YourPagerAdapter(getSupportFragmentManager());
+        mAdapter = new YourPagerAdapter(getSupportFragmentManager(), parsedData);
         mPager = (ViewPager) findViewById(R.id.view_pager);
         mPager.setAdapter(mAdapter);
         mTabLayout.setTabsFromPagerAdapter(mAdapter);
@@ -135,9 +138,16 @@ public class MainActivity extends AppCompatActivity {
 }
 
 class YourPagerAdapter extends FragmentStatePagerAdapter {
-
-    public YourPagerAdapter(FragmentManager fm) {
+    JSONObject parsedData;
+    List<String> keys = new ArrayList<>();
+    public YourPagerAdapter(FragmentManager fm, JSONObject parsedData) {
         super(fm);
+        this.parsedData = parsedData;
+        Iterator keysToCopyIterator = parsedData.keys();
+        while(keysToCopyIterator.hasNext()) {
+            String key = (String) keysToCopyIterator.next();
+            keys.add(key);
+        }
     }
 
     @Override
@@ -148,12 +158,12 @@ class YourPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return parsedData.length();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "Tab " + (position + 1);
+        return keys.get(position);
     }
 }
 

@@ -12,25 +12,29 @@ import java.util.List;
 
 public class DateParse {
 
-    public List<Object> dateParseImplementation(String jsonString) throws JSONException {
-        JSONObject dataObject = new JSONObject(jsonString).getJSONObject("data");
-        String part_heading = dataObject.getString("date");
+    public JSONObject dateParseImplementation(String jsonString) throws JSONException {
+        JSONObject wholeContent = new JSONObject(jsonString);
+        JSONObject dataObject = wholeContent.getJSONObject("data");
+        String part_heading = wholeContent.getString("date");
         Iterator<?> keys = dataObject.keys();
-        List<JSONObject> returnableData = new ArrayList<>();
+        JSONObject returnableData = new JSONObject();
+
         while(keys.hasNext()) {
             String key = (String) keys.next();
             List<RecyclerContent> parsedData = new ArrayList<>();
-            Log.e("BLA", key);
             JSONArray dataArray = dataObject.getJSONArray(key);
             for (int i = 0; i < dataArray.length(); i++) {
                 RecyclerContent newContent = new RecyclerContent();
                 JSONObject obj = dataArray.getJSONObject(i);
-                String heading = part_heading + obj.getString("year");
-                Log.e("yo", obj.toString());
+                String heading = part_heading + ", " + obj.getString("year");
+                String content = obj.getString("text");
+                newContent.setPaletteContent(heading, content);
+                parsedData.add(newContent);
             }
 
-            Log.e("yo", dataArray.getClass().getName());
+            returnableData.put(key, parsedData);
         }
-        return null;
+
+        return returnableData;
     }
 }
