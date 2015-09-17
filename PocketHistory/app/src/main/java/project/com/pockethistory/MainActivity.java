@@ -24,12 +24,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,7 +43,7 @@ import project.com.pockethistory.DataParsers.DateParserHelper;
 import project.com.pockethistory.interfaces.DataAnalyzer;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private CoordinatorLayout mCoordinator;
     private FloatingActionButton mFab;
@@ -59,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         String currentDateDataJSON = intent.getStringExtra("currentDateData");
         DataAnalyzer dataAnalyzer = new DateParserHelper();
         try {
-            parsedData =  dataAnalyzer.dataParserAndOrganizer(currentDateDataJSON);
+            parsedData = dataAnalyzer.dataParserAndOrganizer(currentDateDataJSON);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -79,10 +85,19 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mPager);
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
+        Calendar now = Calendar.getInstance();
+        final DatePickerDialog dpd = DatePickerDialog.newInstance(
+                MainActivity.this,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.setYearRange(1,2100);
+
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(mCoordinator, "FAB Clicked", Snackbar.LENGTH_SHORT).setAction("DISMISS", null).show();
+                dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
 
@@ -108,17 +123,59 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String month = String.valueOf(monthOfYear+1), day = String.valueOf(dayOfMonth);
+        String to_search;
+        if(monthOfYear < 10)
+            month = "0" + (monthOfYear + 1);
+        if(dayOfMonth < 10)
+            day = "0" + dayOfMonth;
+
+        to_search = month + "/" + day;
+        CharSequence[] choice_list = new CharSequence[2];
+        choice_list[0] = "Day of month : " + to_search;
+        choice_list[1] = "Year : " + year;
+        new MaterialDialog.Builder(this)
+                .title("What to search?")
+                .theme(Theme.DARK)
+                .items(choice_list)
+                .autoDismiss(false)
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        Log.e("TAG", String.valueOf(which));
+                        switch (which) {
+                            case 0:
+                                break;
+                            case 1:
+                                break;
+                            default:
+                                Toast.makeText(getApplicationContext(), "Select something to search for", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                        return true;
+                    }
+                })
+                .positiveText("Choose")
+                .show();
+
+        String date = "You picked the following date: " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+        Log.e("TAG", date);
+    }
 }
 
 class YourPagerAdapter extends FragmentStatePagerAdapter {
     JSONObject parsedData;
     List<Object> all_list = new ArrayList<>();
     List<String> keys = new ArrayList<>();
+
     public YourPagerAdapter(FragmentManager fm, JSONObject parsedData) {
         super(fm);
         this.parsedData = parsedData;
         Iterator keysToCopyIterator = parsedData.keys();
-        while(keysToCopyIterator.hasNext()) {
+        while (keysToCopyIterator.hasNext()) {
             String key = (String) keysToCopyIterator.next();
             keys.add(key);
             try {
