@@ -225,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     }
                     mAdapter = new YourPagerAdapter(getSupportFragmentManager(), parsedData);
                     mPager.setAdapter(mAdapter);
+                    mTabLayout.setTabsFromPagerAdapter(mAdapter);
                     break;
                 case 1:
                     dataAnalyzer = new YearParserHelper();
