@@ -3,8 +3,10 @@ package project.com.pockethistory;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -30,16 +32,23 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import project.com.pockethistory.DataParsers.DateParserHelper;
+import project.com.pockethistory.DataParsers.YearParserHelper;
 import project.com.pockethistory.interfaces.DataAnalyzer;
 
 
@@ -52,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     private YourPagerAdapter mAdapter;
     private TabLayout mTabLayout;
     private JSONObject parsedData;
-    private List<Object> all_list;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -120,14 +128,13 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         if (id == R.id.calendar) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+    public void onDateSet(DatePickerDialog view, final int year, int monthOfYear, int dayOfMonth) {
         String month = String.valueOf(monthOfYear+1), day = String.valueOf(dayOfMonth);
-        String to_search;
+        final String to_search;
         if(monthOfYear < 10)
             month = "0" + (monthOfYear + 1);
         if(dayOfMonth < 10)
@@ -148,11 +155,15 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                         Log.e("TAG", String.valueOf(which));
                         switch (which) {
                             case 0:
+                                dialog.dismiss();
+                                new RunSearchTask(which).execute(to_search);
                                 break;
                             case 1:
+                                dialog.dismiss();
+                                new RunSearchTask(which).execute(String.valueOf(year));
                                 break;
                             default:
-                                Toast.makeText(getApplicationContext(), "Select something to search for", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(mCoordinator, "Select something to search for", Snackbar.LENGTH_SHORT).setAction("DISMISS", null).show();
                                 break;
                         }
                         return true;
@@ -160,9 +171,66 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 })
                 .positiveText("Choose")
                 .show();
+    }
 
-        String date = "You picked the following date: " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-        Log.e("TAG", date);
+    public class RunSearchTask extends AsyncTask<String, Void, String> {
+        private int type;
+        public RunSearchTask(int type) {
+            this.type = type;
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String response = null;
+            String urlToHit = null;
+
+            switch (type) {
+                case 0:
+                    urlToHit= Utils.DATE_URL + params[0];
+                    break;
+                case 1:
+                    urlToHit= Utils.YEAR_URL + params[0];
+                    break;
+            }
+
+            Log.e("TAG", urlToHit);
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(urlToHit);
+            ResponseHandler<String> mResponse = new BasicResponseHandler();
+            try {
+                response = httpClient.execute(httpGet, mResponse);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(final String jsonString) {
+            DataAnalyzer dataAnalyzer;
+            JSONObject parsedData = null;
+            switch (type) {
+                case 0:
+                    Log.e("TAG", jsonString);
+                    dataAnalyzer = new DateParserHelper();
+                    try {
+                       parsedData = dataAnalyzer.dataParserAndOrganizer(jsonString);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    mAdapter = new YourPagerAdapter(getSupportFragmentManager(), parsedData);
+                    mPager.setAdapter(mAdapter);
+                    break;
+                case 1:
+                    dataAnalyzer = new YearParserHelper();
+                    break;
+            }
+        }
     }
 }
 

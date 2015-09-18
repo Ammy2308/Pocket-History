@@ -49,7 +49,6 @@ public class SplashActivity extends AppCompatActivity {
             String response = null;
             DateFormat dateFmt = new SimpleDateFormat("MM/dd");
             dateFmt.setTimeZone(TimeZone.getDefault());
-//            dateFmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
             dateFmt.format(new Date());
             String urlToHit = Utils.DATE_URL + dateFmt.format(new Date());
