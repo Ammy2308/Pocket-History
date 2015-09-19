@@ -216,21 +216,25 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             JSONObject parsedData = null;
             switch (type) {
                 case 0:
-                    Log.e("TAG", jsonString);
                     dataAnalyzer = new DateParserHelper();
                     try {
                        parsedData = dataAnalyzer.dataParserAndOrganizer(jsonString);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    mAdapter = new YourPagerAdapter(getSupportFragmentManager(), parsedData);
-                    mPager.setAdapter(mAdapter);
-                    mTabLayout.setTabsFromPagerAdapter(mAdapter);
                     break;
                 case 1:
                     dataAnalyzer = new YearParserHelper();
+                    try {
+                        parsedData = dataAnalyzer.dataParserAndOrganizer(jsonString);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
+            mAdapter = new YourPagerAdapter(getSupportFragmentManager(), parsedData);
+            mPager.setAdapter(mAdapter);
+            mTabLayout.setTabsFromPagerAdapter(mAdapter);
         }
     }
 }

@@ -1,5 +1,7 @@
 package project.com.pockethistory;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,14 +22,21 @@ public class YearParse {
         while(keys.hasNext()) {
             String key = (String) keys.next();
             List<RecyclerContent> parsedData = new ArrayList<>();
-            JSONArray dataArray = dataObject.getJSONArray(key);
-            for (int i = 0; i < dataArray.length(); i++) {
-                RecyclerContent newContent = new RecyclerContent();
-                JSONObject obj = dataArray.getJSONObject(i);
-                String heading = part_heading + ", " + obj.getString("year");
-                String content = obj.getString("text");
-                newContent.setPaletteContent(heading, content);
-                parsedData.add(newContent);
+            JSONObject keyObject = dataObject.getJSONObject(key);
+            Iterator<?> monthKeys = keyObject.keys();
+            while(monthKeys.hasNext()) {
+                String monthKeyName = (String) monthKeys.next();
+                JSONArray requiredArray = keyObject.getJSONArray(monthKeyName);
+                for (int i = 0; i < requiredArray.length(); i++) {
+                    RecyclerContent newContent = new RecyclerContent();
+                    JSONObject obj = requiredArray.getJSONObject(i);
+                    Iterator<?> date = obj.keys();
+                    String dateString = date.next().toString();
+                    String heading = dateString+ ", " + part_heading;
+                    String content = obj.getString(dateString);
+                    newContent.setPaletteContent(heading, content);
+                    parsedData.add(newContent);
+                }
             }
 
             returnableData.put(key, parsedData);
