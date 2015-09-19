@@ -32,7 +32,7 @@ public class MyFragment extends Fragment {
         int pagenumber = args.getInt(ARG_OBJECT);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler);
-        recyclerView.setAdapter(new YourRecyclerAdapter(getActivity(), obj));
+        recyclerView.setAdapter(new PaletteRecyclerAdapter(getActivity(), obj));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return rootView;

@@ -1,5 +1,6 @@
 package project.com.pockethistory.DataParsers;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public class YearParserHelper implements DataAnalyzer {
     private YearParse yearParse = new YearParse();
 
     @Override
-    public JSONObject dataParserAndOrganizer(String jsonString) {
+    public JSONObject dataParserAndOrganizer(String jsonString) throws JSONException {
         return yearParse.yearParseImplementation(jsonString);
     }
 }
