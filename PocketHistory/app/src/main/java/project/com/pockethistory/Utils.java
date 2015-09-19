@@ -2,6 +2,15 @@ package project.com.pockethistory;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Utils {
     public static final String BASE_URL = "http://api.todevs.com/history/";
@@ -14,5 +23,27 @@ public class Utils {
         int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
         styledAttributes.recycle();
         return toolbarHeight;
+    }
+
+    public static String parseForEntireDate(JSONObject object, String year) throws JSONException {
+        JSONObject dataObject = object.getJSONObject("data");
+        Iterator<?> keys = dataObject.keys();
+        JSONObject returnableData = new JSONObject();
+
+        while(keys.hasNext()) {
+            String key = (String) keys.next();
+            JSONArray dataArray = dataObject.getJSONArray(key);
+            JSONArray requiredData = new JSONArray();
+            for (int i = 0; i < dataArray.length(); i++) {
+                JSONObject obj = dataArray.getJSONObject(i);
+                if(obj.getString("year").equals(year))
+                    requiredData.put(obj);
+            }
+            returnableData.put(key, requiredData);
+        }
+
+        object.put("data", returnableData);
+        Log.e("TAG", object.toString());
+        return object.toString();
     }
 }

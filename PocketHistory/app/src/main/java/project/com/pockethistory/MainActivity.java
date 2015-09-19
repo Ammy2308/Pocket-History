@@ -141,9 +141,10 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             day = "0" + dayOfMonth;
 
         to_search = month + "/" + day;
-        CharSequence[] choice_list = new CharSequence[2];
+        CharSequence[] choice_list = new CharSequence[3];
         choice_list[0] = "Day of month : " + to_search;
         choice_list[1] = "Year : " + year;
+        choice_list[2] = "Entire Date";
         new MaterialDialog.Builder(this)
                 .title("What to search?")
                 .theme(Theme.DARK)
@@ -162,6 +163,10 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                                 dialog.dismiss();
                                 new RunSearchTask(which).execute(String.valueOf(year));
                                 break;
+                            case 2:
+                                dialog.dismiss();
+                                new RunSearchTask(which, String.valueOf(year)).execute(to_search);
+                                break;
                             default:
                                 Snackbar.make(mCoordinator, "Select something to search for", Snackbar.LENGTH_SHORT).setAction("DISMISS", null).show();
                                 break;
@@ -175,8 +180,13 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     public class RunSearchTask extends AsyncTask<String, Void, String> {
         private int type;
+        private String year;
         public RunSearchTask(int type) {
             this.type = type;
+        }
+        public RunSearchTask(int type, String year) {
+            this.type = type;
+            this.year = year;
         }
 
         @Override
@@ -195,6 +205,9 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     break;
                 case 1:
                     urlToHit= Utils.YEAR_URL + params[0];
+                    break;
+                case 2:
+                    urlToHit= Utils.DATE_URL + params[0];
                     break;
             }
 
@@ -227,6 +240,16 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     dataAnalyzer = new YearParserHelper();
                     try {
                         parsedData = dataAnalyzer.dataParserAndOrganizer(jsonString);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 2:
+                    dataAnalyzer = new DateParserHelper();
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonString);
+                        String newJsonString = Utils.parseForEntireDate(jsonObject, year);
+                        parsedData = dataAnalyzer.dataParserAndOrganizer(newJsonString);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
