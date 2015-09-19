@@ -294,10 +294,20 @@ class YourRecyclerAdapter extends RecyclerView.Adapter<YourRecyclerAdapter.YourR
 
     @Override
     public void onBindViewHolder(YourRecyclerViewHolder yourRecyclerViewHolder, int i) {
+        yourRecyclerViewHolder.heading.setVisibility(View.GONE);
+        yourRecyclerViewHolder.textView.setVisibility(View.GONE);
         RecyclerContent content = (RecyclerContent) obj.get(i);
 
         yourRecyclerViewHolder.heading.setText(content.getPaletteHeading());
         yourRecyclerViewHolder.textView.setText(content.getPaletteContent());
+        if(!content.getPaletteContent().equals("null")) {
+            yourRecyclerViewHolder.heading.setVisibility(View.VISIBLE);
+            yourRecyclerViewHolder.textView.setVisibility(View.VISIBLE);
+        } else {
+            yourRecyclerViewHolder.textView.setText(content.getPaletteHeading());
+            yourRecyclerViewHolder.heading.setVisibility(View.GONE);
+            yourRecyclerViewHolder.textView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
