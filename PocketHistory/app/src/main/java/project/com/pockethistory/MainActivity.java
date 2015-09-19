@@ -3,6 +3,8 @@ package project.com.pockethistory;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -109,10 +111,20 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
 
-        TextView text = new TextView(this);
-        text.setText(getResources().getString(R.string.title_string));
-        text.setTextAppearance(this, android.R.style.TextAppearance_Material_Widget_ActionBar_Title_Inverse);
-        mToolbar.addView(text);
+        if(Build.VERSION.SDK_INT < 21) {
+            Log.e("TAG","hessss");
+            TextView text = new TextView(this);
+            text.setText(getResources().getString(R.string.title_string));
+            text.setTextColor(Color.WHITE);
+            text.setTextSize(20);
+            text.setTypeface(null, Typeface.BOLD);
+            mToolbar.addView(text);
+        } else {
+            TextView text = new TextView(this);
+            text.setText(getResources().getString(R.string.title_string));
+            text.setTextAppearance(this, android.R.style.TextAppearance_Material_Widget_ActionBar_Title_Inverse);
+            mToolbar.addView(text);
+        }
 
     }
 

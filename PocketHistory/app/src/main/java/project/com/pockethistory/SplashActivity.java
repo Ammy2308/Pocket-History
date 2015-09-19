@@ -2,6 +2,7 @@ package project.com.pockethistory;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -66,10 +67,10 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(final String jsonString) {
+            bookLoading.stop();
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    bookLoading.stop();
                     Intent main_activity_intent = new Intent(SplashActivity.this, MainActivity.class);
                     main_activity_intent.putExtra("currentDateData", jsonString);
                     SplashActivity.this.startActivity(main_activity_intent);
