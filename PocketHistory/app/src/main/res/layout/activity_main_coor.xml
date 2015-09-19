@@ -59,5 +59,6 @@
         android:layout_margin="16dp"
         android:src="@drawable/calendar_white"
         app:borderWidth="0dp"
-        app:fabSize="normal" />
+        app:fabSize="normal"
+		app:layout_behavior="project.com.pockethistory.ScrollFABBehavior" />
 </android.support.design.widget.CoordinatorLayout>
