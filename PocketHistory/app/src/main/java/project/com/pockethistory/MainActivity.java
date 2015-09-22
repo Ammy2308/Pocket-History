@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     public void onDateSet(DatePickerDialog view, final int year, int monthOfYear, int dayOfMonth) {
         String month = String.valueOf(monthOfYear+1), day = String.valueOf(dayOfMonth);
         final String to_search;
-        if(monthOfYear < 10)
+        if((monthOfYear+1) < 10)
             month = "0" + (monthOfYear + 1);
         if(dayOfMonth < 10)
             day = "0" + dayOfMonth;
