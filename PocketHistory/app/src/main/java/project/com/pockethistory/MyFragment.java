@@ -13,6 +13,9 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
+import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
+
 public class MyFragment extends Fragment {
     public static final String ARG_OBJECT = "object";
     List<Object> obj;
@@ -32,7 +35,7 @@ public class MyFragment extends Fragment {
         int pagenumber = args.getInt(ARG_OBJECT);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler);
-        recyclerView.setAdapter(new PaletteRecyclerAdapter(getActivity(), obj));
+        recyclerView.setAdapter(new AlphaInAnimationAdapter(new PaletteRecyclerAdapter(getActivity(), obj)));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return rootView;
