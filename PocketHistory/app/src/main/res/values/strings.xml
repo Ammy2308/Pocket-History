@@ -11,12 +11,10 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_input_taker">Pocket History</string>
-
-    <string-array name="items">
-        <item>Big Buck Bunny</item>
-        <item>Elephants Dream</item>
-        <item>Sintel</item>
-        <item>Tears of Steel</item>
-    </string-array>
+    <string name="action_search">Search</string>
+    <string name="action_sort_asc">Sort Ascending</string>
+    <string name="action_sort_desc">Sort Descending</string>
+    <string name="action_save">Save</string>
+    <string name="search_hint">Search text</string>
 
 </resources>

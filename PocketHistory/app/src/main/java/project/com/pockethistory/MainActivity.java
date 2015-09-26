@@ -1,7 +1,6 @@
 package project.com.pockethistory;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -17,18 +16,17 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -38,14 +36,12 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -54,7 +50,7 @@ import project.com.pockethistory.DataParsers.YearParserHelper;
 import project.com.pockethistory.interfaces.DataAnalyzer;
 
 
-public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, SearchView.OnQueryTextListener {
 
     private CoordinatorLayout mCoordinator;
     private FloatingActionButton mFab;
@@ -63,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     private YourPagerAdapter mAdapter;
     private TabLayout mTabLayout;
     private JSONObject parsedData;
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -80,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             e.printStackTrace();
         }
 
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
         mCoordinator = (CoordinatorLayout) findViewById(R.id.root_coordinator);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -102,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
         );
-        dpd.setYearRange(1,2100);
+        dpd.setYearRange(1, now.get(Calendar.YEAR) + 20);
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         });
 
         if(Build.VERSION.SDK_INT < 21) {
-            Log.e("TAG","hessss");
             TextView text = new TextView(this);
             text.setText(getResources().getString(R.string.title_string));
             text.setTextColor(Color.WHITE);
@@ -125,21 +118,23 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             text.setTextAppearance(this, android.R.style.TextAppearance_Material_Widget_ActionBar_Title_Inverse);
             mToolbar.addView(text);
         }
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        final MenuItem item = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(this);
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.calendar) {
-            return true;
-        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -188,6 +183,17 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 })
                 .positiveText("Choose")
                 .show();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Log.e("TAG", String.valueOf(mTabLayout.getSelectedTabPosition()));
+        return false;
     }
 
     public class RunSearchTask extends AsyncTask<String, Void, String> {
