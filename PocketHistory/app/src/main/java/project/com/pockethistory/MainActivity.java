@@ -40,6 +40,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -213,15 +215,27 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     break;
             }
 
-            Log.e("TAG", urlToHit);
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(urlToHit);
-            ResponseHandler<String> mResponse = new BasicResponseHandler();
+            URL url;
+            HttpURLConnection urlConnection = null;
+
             try {
-                response = httpClient.execute(httpGet, mResponse);
-            } catch (IOException e) {
+                url = new URL(urlToHit);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                int responseCode = urlConnection.getResponseCode();
+
+                if(responseCode == 200){
+                    response = Utils.readStream(urlConnection.getInputStream());
+                }else{
+                    Log.v("TAG", "Response code:"+ responseCode);
+                }
+
+            } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if(urlConnection != null)
+                    urlConnection.disconnect();
             }
+
             return response;
         }
 

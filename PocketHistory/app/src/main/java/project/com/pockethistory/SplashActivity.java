@@ -21,6 +21,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,15 +55,28 @@ public class SplashActivity extends AppCompatActivity {
 
             dateFmt.format(new Date());
             String urlToHit = Utils.DATE_URL + dateFmt.format(new Date());
-            DefaultHttpClient httpClient = new DefaultHttpClient();
 
-            HttpGet httpGet = new HttpGet(urlToHit);
-            ResponseHandler<String> mResponse = new BasicResponseHandler();
+            URL url;
+            HttpURLConnection urlConnection = null;
+
             try {
-                response = httpClient.execute(httpGet, mResponse);
-            } catch (IOException e) {
+                url = new URL(urlToHit);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                int responseCode = urlConnection.getResponseCode();
+
+                if(responseCode == 200){
+                    response = Utils.readStream(urlConnection.getInputStream());
+                }else{
+                    Log.v("TAG", "Response code:"+ responseCode);
+                }
+
+            } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if(urlConnection != null)
+                    urlConnection.disconnect();
             }
+
             return response;
         }
 

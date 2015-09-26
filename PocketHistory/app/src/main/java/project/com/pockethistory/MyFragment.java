@@ -21,7 +21,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
-public class MyFragment extends Fragment implements android.support.v7.widget.SearchView.OnQueryTextListener {
+public class MyFragment extends Fragment {
     public static final String ARG_OBJECT = "object";
     List<Object> obj;
 
@@ -45,25 +45,5 @@ public class MyFragment extends Fragment implements android.support.v7.widget.Se
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return rootView;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        final MenuItem item = menu.findItem(R.id.action_search);
-        final android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
-        searchView.setOnQueryTextListener(this);
-
-        inflater.inflate(R.menu.menu_main, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
     }
 }
