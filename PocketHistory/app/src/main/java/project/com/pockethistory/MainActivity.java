@@ -50,7 +50,7 @@ import project.com.pockethistory.DataParsers.YearParserHelper;
 import project.com.pockethistory.interfaces.DataAnalyzer;
 
 
-public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private CoordinatorLayout mCoordinator;
     private FloatingActionButton mFab;
@@ -123,11 +123,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        final MenuItem item = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
-        searchView.setOnQueryTextListener(this);
-
         return true;
     }
 
@@ -183,17 +178,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 })
                 .positiveText("Choose")
                 .show();
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        Log.e("TAG", String.valueOf(mTabLayout.getSelectedTabPosition()));
-        return false;
     }
 
     public class RunSearchTask extends AsyncTask<String, Void, String> {

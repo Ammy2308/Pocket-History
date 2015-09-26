@@ -3,13 +3,15 @@ package project.com.pockethistory;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
 
 import org.json.JSONObject;
 
@@ -19,7 +21,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
-public class MyFragment extends Fragment {
+public class MyFragment extends Fragment implements android.support.v7.widget.SearchView.OnQueryTextListener {
     public static final String ARG_OBJECT = "object";
     List<Object> obj;
 
@@ -39,10 +41,29 @@ public class MyFragment extends Fragment {
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(new PaletteRecyclerAdapter(getActivity(), obj));
-        alphaAdapter.setFirstOnly(false);
         recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        final MenuItem item = menu.findItem(R.id.action_search);
+        final android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(this);
+
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 }
