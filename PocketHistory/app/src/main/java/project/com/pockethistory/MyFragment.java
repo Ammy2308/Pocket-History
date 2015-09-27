@@ -28,7 +28,7 @@ import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 public class MyFragment extends Fragment implements SearchView.OnQueryTextListener {
     public static final String ARG_OBJECT = "object";
-    private List<Object> obj, toPass;
+    private List<Object> obj;
     private PaletteRecyclerAdapter paletteRecyclerAdapter;
     private RecyclerView recyclerView;
     private Context context;
@@ -59,10 +59,7 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
         setHasOptionsMenu(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        toPass = new ArrayList<>();
-        toPass.addAll(obj);
-
-        paletteRecyclerAdapter = new PaletteRecyclerAdapter(getActivity(), toPass);
+        paletteRecyclerAdapter = new PaletteRecyclerAdapter(getActivity(), obj);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
         recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
     }
@@ -86,7 +83,7 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
     @Override
     public boolean onQueryTextChange(String newText) {
         List<Object> filteredRecList = new ArrayList<>();
-        filteredRecList.addAll(filter(toPass, newText));
+        filteredRecList.addAll(filter(obj, newText));
 
         paletteRecyclerAdapter = new PaletteRecyclerAdapter(context, filteredRecList);
         if(newText.equals("")) {
