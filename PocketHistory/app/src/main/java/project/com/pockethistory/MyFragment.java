@@ -85,21 +85,19 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
                 if(is_descending) {
                     is_descending = false;
                     Collections.reverse(obj);
-                    paletteRecyclerAdapter = new PaletteRecyclerAdapter(context, obj);
-                    AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
-                    recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
                 }
                 break;
             case R.id.action_sort_desc:
                 if(!is_descending) {
                     is_descending = true;
                     Collections.reverse(obj);
-                    paletteRecyclerAdapter = new PaletteRecyclerAdapter(context, obj);
-                    AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
-                    recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
                 }
                 break;
         }
+
+        paletteRecyclerAdapter = new PaletteRecyclerAdapter(context, obj);
+        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
+        recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
         return true;
     }
 
