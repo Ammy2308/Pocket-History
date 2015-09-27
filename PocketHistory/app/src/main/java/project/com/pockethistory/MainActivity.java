@@ -1,6 +1,7 @@
 package project.com.pockethistory;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -32,10 +33,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     private YourPagerAdapter mAdapter;
     private TabLayout mTabLayout;
     private JSONObject parsedData;
+    private Context context;
+    private MaterialDialog progressDialog;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -68,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_coor);
 
+        context = this;
         Intent intent = getIntent();
         String currentDateDataJSON = intent.getStringExtra("currentDateData");
         DataAnalyzer dataAnalyzer = new DateParserHelper();
@@ -120,6 +120,18 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             text.setTextAppearance(this, android.R.style.TextAppearance_Material_Widget_ActionBar_Title_Inverse);
             mToolbar.addView(text);
         }
+
+        setupProgressBox();
+    }
+
+    public void setupProgressBox() {
+        progressDialog = new MaterialDialog.Builder(context)
+                .content("Reading history books")
+                .theme(Theme.DARK)
+                .progress(true, 0)
+                .autoDismiss(false)
+                .cancelable(false)
+                .build();
     }
 
     @Override
@@ -182,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
         @Override
         protected void onPreExecute() {
-
+            progressDialog.show();
         }
 
         @Override
@@ -212,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
                 if(responseCode == 200){
                     response = Utils.readStream(urlConnection.getInputStream());
+                    Utils.CURRENT_SEARCH = response;
                 }else{
                     Log.v("TAG", "Response code:"+ responseCode);
                 }
@@ -261,6 +274,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             mAdapter = new YourPagerAdapter(getSupportFragmentManager(), parsedData);
             mPager.setAdapter(mAdapter);
             mTabLayout.setTabsFromPagerAdapter(mAdapter);
+
+            progressDialog.dismiss();
         }
     }
 }

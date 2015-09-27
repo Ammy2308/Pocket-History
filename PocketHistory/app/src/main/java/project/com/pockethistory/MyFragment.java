@@ -3,6 +3,7 @@ package project.com.pockethistory;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,16 +16,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 
-import org.json.JSONObject;
-
-import java.net.ContentHandler;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
@@ -34,6 +36,7 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
     private PaletteRecyclerAdapter paletteRecyclerAdapter;
     private RecyclerView recyclerView;
     private Context context;
+    private File storagePath;
     private boolean is_descending = false;
 
     public MyFragment() {
@@ -85,20 +88,61 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
                 if(is_descending) {
                     is_descending = false;
                     Collections.reverse(obj);
+                    paletteRecyclerAdapter = new PaletteRecyclerAdapter(context, obj);
+                    AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
+                    recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
                 }
                 break;
             case R.id.action_sort_desc:
                 if(!is_descending) {
                     is_descending = true;
                     Collections.reverse(obj);
+                    paletteRecyclerAdapter = new PaletteRecyclerAdapter(context, obj);
+                    AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
+                    recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
                 }
                 break;
+            case R.id.action_save:
+                showSaveDialogBox();
+                break;
         }
-
-        paletteRecyclerAdapter = new PaletteRecyclerAdapter(context, obj);
-        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
-        recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
         return true;
+    }
+
+    public void showSaveDialogBox() {
+        new MaterialDialog.Builder(getActivity())
+                .title("Give it a name?")
+                .content("Name the content you are saving. Makes it easy to fetch later!")
+                .theme(Theme.DARK)
+                .autoDismiss(false)
+                .positiveText("Save")
+                .inputRangeRes(5, 30, R.color.colorAccent)
+                .input("Name the file", null, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        String state = Environment.getExternalStorageState();
+                        if (Environment.MEDIA_MOUNTED.equals(state))
+                            storagePath = new File(Environment.getExternalStorageDirectory() + "/PocketHistory/", input + ".dat");
+                        else
+                            storagePath = new File(context.getFilesDir() + "/PocketHistory/", input + ".dat");
+
+
+                        if(storagePath.exists())
+                            Toast.makeText(context, "File already exists", Toast.LENGTH_SHORT).show();
+                        else {
+                            try {
+                                Log.e("PATH", storagePath.getPath());
+                                storagePath.getParentFile().mkdirs();
+                                PrintWriter out = new PrintWriter(storagePath);
+                                out.print(Utils.CURRENT_SEARCH);
+                                dialog.dismiss();
+                                Toast.makeText(context, "Saved this page", Toast.LENGTH_SHORT).show();
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }).show();
     }
 
     @Override

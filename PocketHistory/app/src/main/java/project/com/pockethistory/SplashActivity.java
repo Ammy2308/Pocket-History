@@ -10,22 +10,10 @@ import android.util.Log;
 
 import com.victor.loading.book.BookLoading;
 
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -66,6 +54,7 @@ public class SplashActivity extends AppCompatActivity {
 
                 if(responseCode == 200){
                     response = Utils.readStream(urlConnection.getInputStream());
+                    Utils.CURRENT_SEARCH = response;
                 }else{
                     Log.v("TAG", "Response code:"+ responseCode);
                 }
