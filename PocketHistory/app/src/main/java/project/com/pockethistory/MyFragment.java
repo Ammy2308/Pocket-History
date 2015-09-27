@@ -20,6 +20,8 @@ import org.json.JSONObject;
 
 import java.net.ContentHandler;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
@@ -32,6 +34,7 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
     private PaletteRecyclerAdapter paletteRecyclerAdapter;
     private RecyclerView recyclerView;
     private Context context;
+    private boolean is_descending = false;
 
     public MyFragment() {
 
@@ -73,6 +76,31 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
         final MenuItem item = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sort_asc:
+                if(is_descending) {
+                    is_descending = false;
+                    Collections.reverse(obj);
+                    paletteRecyclerAdapter = new PaletteRecyclerAdapter(context, obj);
+                    AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
+                    recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
+                }
+                break;
+            case R.id.action_sort_desc:
+                if(!is_descending) {
+                    is_descending = true;
+                    Collections.reverse(obj);
+                    paletteRecyclerAdapter = new PaletteRecyclerAdapter(context, obj);
+                    AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
+                    recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
+                }
+                break;
+        }
+        return true;
     }
 
     @Override
