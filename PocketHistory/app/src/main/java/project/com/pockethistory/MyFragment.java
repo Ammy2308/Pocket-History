@@ -1,6 +1,7 @@
 package project.com.pockethistory;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 
 import org.json.JSONObject;
 
+import java.net.ContentHandler;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +28,10 @@ import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 public class MyFragment extends Fragment implements SearchView.OnQueryTextListener {
     public static final String ARG_OBJECT = "object";
-    List<Object> obj;
-    PaletteRecyclerAdapter paletteRecyclerAdapter;
-    RecyclerView recyclerView;
+    private List<Object> obj, toPass;
+    private PaletteRecyclerAdapter paletteRecyclerAdapter;
+    private RecyclerView recyclerView;
+    private Context context;
 
     public MyFragment() {
 
@@ -40,18 +43,28 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         Bundle args = getArguments();
         int pagenumber = args.getInt(ARG_OBJECT);
-        paletteRecyclerAdapter = new PaletteRecyclerAdapter(getActivity(), obj);
 
+        context = getActivity();
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler);
-        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
-        recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        toPass = new ArrayList<>();
+        toPass.addAll(obj);
+
+        paletteRecyclerAdapter = new PaletteRecyclerAdapter(getActivity(), toPass);
+        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
+        recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
     }
 
     @Override
@@ -72,7 +85,34 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        Log.e("Tag", newText);
-        return false;
+        List<Object> filteredRecList = new ArrayList<>();
+        filteredRecList.addAll(filter(toPass, newText));
+
+        paletteRecyclerAdapter = new PaletteRecyclerAdapter(context, filteredRecList);
+        if(newText.equals("")) {
+            AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(paletteRecyclerAdapter);
+            alphaAdapter.setFirstOnly(true);
+            recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
+        } else {
+            recyclerView.setAdapter(new ScaleInAnimationAdapter(paletteRecyclerAdapter));
+        }
+
+        return true;
+    }
+
+    private List<Object> filter(List<Object> models, String query) {
+        query = query.toLowerCase();
+
+        final List<Object> filteredRecList = new ArrayList<>();
+        for (Object model : models) {
+            RecyclerContent content = (RecyclerContent) model;
+            final String contentToBeSearched = content.getPaletteHeading().toLowerCase() +
+                                      " " + content.getPaletteContent().toLowerCase();
+
+            if (contentToBeSearched.contains(query)) {
+                filteredRecList.add(model);
+            }
+        }
+        return filteredRecList;
     }
 }
