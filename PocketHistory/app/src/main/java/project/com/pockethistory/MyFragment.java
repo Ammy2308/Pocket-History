@@ -37,7 +37,7 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
     private RecyclerView recyclerView;
     private Context context;
     private File storagePath;
-    private boolean is_descending = false;
+    private boolean is_descending;
 
     public MyFragment() {
 
@@ -73,7 +73,13 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        Log.e("TAG", "i got executed");
+        savedInstanceState.putBoolean("descending", is_descending);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        is_descending = savedInstanceState != null && savedInstanceState.getBoolean("descending", false);
     }
 
     @Override
