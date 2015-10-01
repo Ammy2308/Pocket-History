@@ -71,6 +71,12 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.e("TAG", "i got executed");
+    }
+
+    @Override
     public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
@@ -122,24 +128,18 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
                     public void onInput(MaterialDialog dialog, CharSequence input) {
                         String state = Environment.getExternalStorageState();
                         if (Environment.MEDIA_MOUNTED.equals(state))
-                            storagePath = new File(Environment.getExternalStorageDirectory() + "/PocketHistory/", input + ".dat");
+                            storagePath = new File(Environment.getExternalStorageDirectory() + "/PocketHistory/", Utils.CURRENT_TYPE + "_" + input + ".dat");
                         else
-                            storagePath = new File(context.getFilesDir() + "/PocketHistory/", input + ".dat");
+                            storagePath = new File(context.getFilesDir() + "/PocketHistory/", Utils.CURRENT_TYPE + "_" + input + ".dat");
 
-
-                        if(storagePath.exists())
-                            Toast.makeText(context, "File already exists", Toast.LENGTH_SHORT).show();
-                        else {
-                            try {
-                                Log.e("PATH", storagePath.getPath());
-                                storagePath.getParentFile().mkdirs();
-                                PrintWriter out = new PrintWriter(storagePath);
-                                out.print(Utils.CURRENT_SEARCH);
-                                dialog.dismiss();
-                                Toast.makeText(context, "Saved this page", Toast.LENGTH_SHORT).show();
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
+                        try {
+                            Log.e("PATH", storagePath.getPath());
+                            PrintWriter out = new PrintWriter(storagePath);
+                            out.print(Utils.CURRENT_SEARCH);
+                            dialog.dismiss();
+                            Toast.makeText(context, "Saved this page", Toast.LENGTH_SHORT).show();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
                         }
                     }
                 }).show();
