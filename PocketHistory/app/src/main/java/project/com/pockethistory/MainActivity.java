@@ -224,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
                 if(responseCode == 200){
                     response = Utils.readStream(urlConnection.getInputStream());
-                    Utils.CURRENT_SEARCH = response;
                 }else{
                     Log.v("TAG", "Response code:"+ responseCode);
                 }
@@ -247,6 +246,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 case 0:
                     dataAnalyzer = new DateParserHelper();
                     try {
+                        Utils.CURRENT_SEARCH = jsonString;
+                        Utils.CURRENT_TYPE = "Date";
                        parsedData = dataAnalyzer.dataParserAndOrganizer(jsonString);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -255,6 +256,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 case 1:
                     dataAnalyzer = new YearParserHelper();
                     try {
+                        Utils.CURRENT_SEARCH = jsonString;
+                        Utils.CURRENT_TYPE = "Year";
                         parsedData = dataAnalyzer.dataParserAndOrganizer(jsonString);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -265,6 +268,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     try {
                         JSONObject jsonObject = new JSONObject(jsonString);
                         String newJsonString = Utils.parseForEntireDate(jsonObject, year);
+                        Utils.CURRENT_SEARCH = newJsonString;
+                        Utils.CURRENT_TYPE = "Date";
                         parsedData = dataAnalyzer.dataParserAndOrganizer(newJsonString);
                     } catch (JSONException e) {
                         e.printStackTrace();

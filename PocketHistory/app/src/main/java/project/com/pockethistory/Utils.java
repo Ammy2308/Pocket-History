@@ -2,6 +2,7 @@ package project.com.pockethistory;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Environment;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -9,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -63,5 +65,17 @@ public class Utils {
         in.close();
 
         return response.toString();
+    }
+
+    public static File[] getSavedFiles(Context context) {
+        File storagePath;
+        String state = Environment.getExternalStorageState();
+
+        if (Environment.MEDIA_MOUNTED.equals(state))
+            storagePath = new File(Environment.getExternalStorageDirectory() + "/PocketHistory/");
+        else
+            storagePath = new File(context.getFilesDir() + "/PocketHistory/");
+
+        return storagePath.listFiles();
     }
 }

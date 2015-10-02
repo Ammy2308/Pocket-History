@@ -3,6 +3,7 @@ package project.com.pockethistory;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.util.Log;
 
 import com.victor.loading.book.BookLoading;
 
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
@@ -25,6 +27,16 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         bookLoading = (BookLoading) findViewById(R.id.bookloading);
+
+        File storagePath;
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state))
+            storagePath = new File(Environment.getExternalStorageDirectory() + "/PocketHistory/");
+        else
+            storagePath = new File(getFilesDir() + "/PocketHistory/");
+
+        if(!storagePath.exists())
+            storagePath.mkdirs();
 
         new CurrentDateAsyncTask().execute();
     }
@@ -55,6 +67,7 @@ public class SplashActivity extends AppCompatActivity {
                 if(responseCode == 200){
                     response = Utils.readStream(urlConnection.getInputStream());
                     Utils.CURRENT_SEARCH = response;
+                    Utils.CURRENT_TYPE = "Date";
                 }else{
                     Log.v("TAG", "Response code:"+ responseCode);
                 }
@@ -81,6 +94,14 @@ public class SplashActivity extends AppCompatActivity {
                     SplashActivity.this.finish();
                 }
             }, 1000);
+//            final Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                public void run() {
+//                    Intent main_activity_intent = new Intent(SplashActivity.this, FileChooserActivity.class);
+//                    SplashActivity.this.startActivity(main_activity_intent);
+//                    SplashActivity.this.finish();
+//                }
+//            }, 1000);
         }
     }
 }

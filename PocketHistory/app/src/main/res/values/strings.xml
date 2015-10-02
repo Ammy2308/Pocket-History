@@ -16,5 +16,6 @@
     <string name="action_sort_desc">Sort Descending</string>
     <string name="action_save">Save</string>
     <string name="search_hint">Search text</string>
+    <string name="title_activity_file_chooser">Saved Pages</string>
 
 </resources>
