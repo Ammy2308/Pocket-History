@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         String currentDateDataJSON = intent.getStringExtra("dateData");
         String yearData = intent.getStringExtra("yearData");
         try {
-            if(yearData == null || yearData == "") {
+            if(yearData == null || yearData.equals("")) {
                 DataAnalyzer dataAnalyzer = new DateParserHelper();
                 parsedData = dataAnalyzer.dataParserAndOrganizer(currentDateDataJSON);
             } else {

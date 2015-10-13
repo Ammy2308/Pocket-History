@@ -119,9 +119,13 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
                 }
                 break;
             case R.id.action_saved_pages:
-                Intent file_activity = new Intent(getActivity(), FileChooserActivity.class);
-                getActivity().startActivity(file_activity);
-                getActivity().finish();
+                if(Utils.getSavedFiles(getActivity()).length != 0) {
+                    Intent file_activity = new Intent(getActivity(), FileChooserActivity.class);
+                    getActivity().startActivity(file_activity);
+                    getActivity().finish();
+                }
+                else
+                    Toast.makeText(getActivity(), "You do not have any saved pages", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_save:
                 showSaveDialogBox();

@@ -8,9 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +37,10 @@ public class FileChooserActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         stored_filenames = Utils.getSavedFiles(getApplicationContext());
+
+        final TextView textView = (TextView) findViewById(R.id.no_files);
+        if(stored_filenames.length == 0)
+            textView.setVisibility(View.VISIBLE);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.file_recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));

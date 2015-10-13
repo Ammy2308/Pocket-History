@@ -15,7 +15,8 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="gone"
-        android:text="You do not have any saved pages" />
+        android:textAlignment="center"
+        android:text="You do not have any saved pages. \nSwitch on internet and rerun the application" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/file_recycler"
