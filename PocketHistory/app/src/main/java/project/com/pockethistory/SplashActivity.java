@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.victor.loading.book.BookLoading;
 
@@ -85,23 +86,27 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final String jsonString) {
             bookLoading.stop();
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    Intent main_activity_intent = new Intent(SplashActivity.this, MainActivity.class);
-                    main_activity_intent.putExtra("currentDateData", jsonString);
-                    SplashActivity.this.startActivity(main_activity_intent);
-                    SplashActivity.this.finish();
-                }
-            }, 1000);
-//            final Handler handler = new Handler();
-//            handler.postDelayed(new Runnable() {
-//                public void run() {
-//                    Intent main_activity_intent = new Intent(SplashActivity.this, FileChooserActivity.class);
-//                    SplashActivity.this.startActivity(main_activity_intent);
-//                    SplashActivity.this.finish();
-//                }
-//            }, 1000);
+            if(jsonString == null) {
+                Toast.makeText(getApplicationContext(), "Error connecting internet", Toast.LENGTH_SHORT).show();
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        Intent main_activity_intent = new Intent(SplashActivity.this, FileChooserActivity.class);
+                        SplashActivity.this.startActivity(main_activity_intent);
+                        SplashActivity.this.finish();
+                    }
+                }, 1000);
+            } else {
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        Intent main_activity_intent = new Intent(SplashActivity.this, MainActivity.class);
+                        main_activity_intent.putExtra("dateData", jsonString);
+                        SplashActivity.this.startActivity(main_activity_intent);
+                        SplashActivity.this.finish();
+                    }
+                }, 1000);
+            }
         }
     }
 }

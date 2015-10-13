@@ -21,6 +21,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_saved_pages"
+        android:title="@string/action_saved_pages"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_save"
         android:title="@string/action_save"
         app:showAsAction="never" />

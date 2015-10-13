@@ -2,6 +2,7 @@ package project.com.pockethistory;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -20,8 +21,11 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,6 +118,11 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
                     recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
                 }
                 break;
+            case R.id.action_saved_pages:
+                Intent file_activity = new Intent(getActivity(), FileChooserActivity.class);
+                getActivity().startActivity(file_activity);
+                getActivity().finish();
+                break;
             case R.id.action_save:
                 showSaveDialogBox();
                 break;
@@ -128,7 +137,7 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
                 .theme(Theme.DARK)
                 .autoDismiss(false)
                 .positiveText("Save")
-                .inputRangeRes(5, 30, R.color.colorAccent)
+                .inputRangeRes(3, 30, R.color.colorAccent)
                 .input("Name the file", null, new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
@@ -140,11 +149,10 @@ public class MyFragment extends Fragment implements SearchView.OnQueryTextListen
 
                         try {
                             Log.e("PATH", storagePath.getPath());
-                            PrintWriter out = new PrintWriter(storagePath);
-                            out.print(Utils.CURRENT_SEARCH);
+                            FileUtils.writeStringToFile(storagePath, Utils.CURRENT_SEARCH);
                             dialog.dismiss();
                             Toast.makeText(context, "Saved this page", Toast.LENGTH_SHORT).show();
-                        } catch (FileNotFoundException e) {
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }

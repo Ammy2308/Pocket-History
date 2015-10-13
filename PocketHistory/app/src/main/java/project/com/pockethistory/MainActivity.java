@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -69,10 +70,16 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
         context = this;
         Intent intent = getIntent();
-        String currentDateDataJSON = intent.getStringExtra("currentDateData");
-        DataAnalyzer dataAnalyzer = new DateParserHelper();
+        String currentDateDataJSON = intent.getStringExtra("dateData");
+        String yearData = intent.getStringExtra("yearData");
         try {
-            parsedData = dataAnalyzer.dataParserAndOrganizer(currentDateDataJSON);
+            if(yearData == null || yearData == "") {
+                DataAnalyzer dataAnalyzer = new DateParserHelper();
+                parsedData = dataAnalyzer.dataParserAndOrganizer(currentDateDataJSON);
+            } else {
+                DataAnalyzer dataAnalyzer = new YearParserHelper();
+                parsedData = dataAnalyzer.dataParserAndOrganizer(yearData);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -240,47 +247,53 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
         @Override
         protected void onPostExecute(final String jsonString) {
-            DataAnalyzer dataAnalyzer;
-            JSONObject parsedData = null;
-            switch (type) {
-                case 0:
-                    dataAnalyzer = new DateParserHelper();
-                    try {
-                        Utils.CURRENT_SEARCH = jsonString;
-                        Utils.CURRENT_TYPE = "Date";
-                       parsedData = dataAnalyzer.dataParserAndOrganizer(jsonString);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case 1:
-                    dataAnalyzer = new YearParserHelper();
-                    try {
-                        Utils.CURRENT_SEARCH = jsonString;
-                        Utils.CURRENT_TYPE = "Year";
-                        parsedData = dataAnalyzer.dataParserAndOrganizer(jsonString);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case 2:
-                    dataAnalyzer = new DateParserHelper();
-                    try {
-                        JSONObject jsonObject = new JSONObject(jsonString);
-                        String newJsonString = Utils.parseForEntireDate(jsonObject, year);
-                        Utils.CURRENT_SEARCH = newJsonString;
-                        Utils.CURRENT_TYPE = "Date";
-                        parsedData = dataAnalyzer.dataParserAndOrganizer(newJsonString);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
+            if(jsonString == null) {
+                Toast.makeText(getApplicationContext(), "Could not connect to internet", Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
             }
-            mAdapter = new YourPagerAdapter(getSupportFragmentManager(), parsedData);
-            mPager.setAdapter(mAdapter);
-            mTabLayout.setTabsFromPagerAdapter(mAdapter);
+            else {
+                DataAnalyzer dataAnalyzer;
+                JSONObject parsedData = null;
+                switch (type) {
+                    case 0:
+                        dataAnalyzer = new DateParserHelper();
+                        try {
+                            Utils.CURRENT_SEARCH = jsonString;
+                            Utils.CURRENT_TYPE = "Date";
+                            parsedData = dataAnalyzer.dataParserAndOrganizer(jsonString);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 1:
+                        dataAnalyzer = new YearParserHelper();
+                        try {
+                            Utils.CURRENT_SEARCH = jsonString;
+                            Utils.CURRENT_TYPE = "Year";
+                            parsedData = dataAnalyzer.dataParserAndOrganizer(jsonString);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 2:
+                        dataAnalyzer = new DateParserHelper();
+                        try {
+                            JSONObject jsonObject = new JSONObject(jsonString);
+                            String newJsonString = Utils.parseForEntireDate(jsonObject, year);
+                            Utils.CURRENT_SEARCH = newJsonString;
+                            Utils.CURRENT_TYPE = "Date";
+                            parsedData = dataAnalyzer.dataParserAndOrganizer(newJsonString);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                }
+                mAdapter = new YourPagerAdapter(getSupportFragmentManager(), parsedData);
+                mPager.setAdapter(mAdapter);
+                mTabLayout.setTabsFromPagerAdapter(mAdapter);
 
-            progressDialog.dismiss();
+                progressDialog.dismiss();
+            }
         }
     }
 }

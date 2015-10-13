@@ -1,17 +1,22 @@
 package project.com.pockethistory;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,10 +53,31 @@ public class FileChooserActivity extends AppCompatActivity {
                     Matcher m = r.matcher(filename);
 
                     if(m.find()) {
-                        if(m.group(1).contains("Date"))
-                            Toast.makeText(getApplicationContext(), stored_filenames[position].getAbsolutePath(), Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getApplicationContext(), stored_filenames[position].getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                        if(m.group(1).contains("Date")) {
+                            try {
+                                String dateData = FileUtils.readFileToString(stored_filenames[position]);
+
+                                Intent main_activity_intent = new Intent(FileChooserActivity.this, MainActivity.class);
+                                main_activity_intent.putExtra("dateData", dateData);
+                                FileChooserActivity.this.startActivity(main_activity_intent);
+                                FileChooserActivity.this.finish();
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else {
+                            try {
+                                String yearData = FileUtils.readFileToString(stored_filenames[position]);
+
+                                Intent main_activity_intent = new Intent(FileChooserActivity.this, MainActivity.class);
+                                main_activity_intent.putExtra("yearData", yearData);
+                                FileChooserActivity.this.startActivity(main_activity_intent);
+                                FileChooserActivity.this.finish();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
             })
